@@ -1,6 +1,9 @@
 #include "SupermarketAPI.h"
 #include <iostream>
 
+/*!
+ * \brief The constructor for the SupermarketAPI class.
+ */
 SupermarketAPI::SupermarketAPI() :
 	PAKNSAVE_BASE_URL("https://www.paknsave.co.nz"),
 	COUNTDOWN_BASE_URL("https://www.countdown.co.nz"),
@@ -21,7 +24,10 @@ SupermarketAPI::SupermarketAPI() :
 	newWorldClient.SetTimeout(cpr::Timeout(3000));
 }
 
-// Returns common headers used in all supermarket requests.
+/*!
+ * \brief Returns common headers used in all supermarket requests.
+ * \return Common headers as a cpr::Header object.
+ */
 cpr::Header SupermarketAPI::commonHeaders()
 {
 	cpr::Header headers;
@@ -36,7 +42,10 @@ cpr::Header SupermarketAPI::commonHeaders()
 	return headers;
 }
 
-// Returns specific headers for the Countdown supermarket.
+/*!
+ * \brief Returns specific headers for the Countdown supermarket.
+ * \return Countdown headers as a cpr::Header object.
+ */
 cpr::Header SupermarketAPI::countdownHeaders()
 {
 	cpr::Header headers = commonHeaders();
@@ -50,7 +59,10 @@ cpr::Header SupermarketAPI::countdownHeaders()
 	return headers;
 }
 
-// Returns specific headers for the Pak'nSave supermarket.
+/*!
+ * \brief Returns specific headers for the Pak'nSave supermarket.
+ * \return Pak'nSave headers as a cpr::Header object.
+ */
 cpr::Header SupermarketAPI::paknsaveHeaders()
 {
 	cpr::Header headers = commonHeaders();
@@ -60,7 +72,10 @@ cpr::Header SupermarketAPI::paknsaveHeaders()
 	return headers;
 }
 
-// Returns specific headers for the New World supermarket.
+/*!
+ * \brief Returns specific headers for the New World supermarket.
+ * \return New World headers as a cpr::Header object.
+ */
 cpr::Header SupermarketAPI::newWorldHeaders()
 {
 	cpr::Header headers = commonHeaders();
@@ -70,7 +85,10 @@ cpr::Header SupermarketAPI::newWorldHeaders()
 	return headers;
 }
 
-// Fetches a list of supermarkets from each platform's API.
+/*!
+ * \brief Fetches a list of supermarkets from each platform's API.
+ * \return Vector of maps containing supermarket information.
+ */
 std::vector<std::map<std::string, std::string>> SupermarketAPI::fetchSupermarkets()
 {
 	std::vector<std::map<std::string, std::string>> supermarkets;
@@ -111,6 +129,13 @@ std::vector<std::map<std::string, std::string>> SupermarketAPI::fetchSupermarket
 }
 
 // Selects a supermarket to perform subsequent operations. Changes the context in which subsequent API calls are made.
+
+/*!
+ * \brief Selects a supermarket to perform subsequent operations.
+ * \details Changes the context in which subsequent API calls are made.
+ * \param supermarket Map containing supermarket information.
+ */
+
 void SupermarketAPI::selectSupermarket(const std::map<std::string, std::string>& supermarket)
 {
 
@@ -132,7 +157,14 @@ void SupermarketAPI::selectSupermarket(const std::map<std::string, std::string>&
 	}
 }
 
-// Searches for products in the selected supermarket, and returns the results from the specified page.
+/*!
+ * \brief Searches for products in the selected supermarket.
+ * \details Returns the results from the specified page.
+ * \param term The search term.
+ * \param supermarket Map containing supermarket information.
+ * \param page The page number.
+ * \return Vector of maps containing product information.
+ */
 std::vector<std::map<std::string, std::string>> SupermarketAPI::searchProduct(const std::string& term, const std::map<std::string, std::string>& supermarket, int page)
 {
 	std::vector<std::map<std::string, std::string>> products;
