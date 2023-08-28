@@ -1,18 +1,22 @@
-name: hello_world
+name: Visual Studio C++ Tests
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-    - main
+on: [push] # Trigger the workflow on every push
 
 jobs:
-  hello_job:
-    runs-on:
-      windows-latest
+  build-and-test:
+    runs-on: windows-latest
 
     steps:
-    - name: Hello step
-      run: echo "Hello World"
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v1
+        with:
+          vs-version: 'latest' # Or specify a specific version of Visual Studio
+      
+      - name: Build
+        run: msbuild /p:Configuration=Debug /m /p:Platform=x64 ShopSmart.sln
+      
+      - name: Run tests
+        run: Debug\YourApp.exe
