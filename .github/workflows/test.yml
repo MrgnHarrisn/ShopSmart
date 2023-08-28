@@ -1,9 +1,9 @@
-name: Visual Studio C++ Tests
+name: Visual Studio C++ Build with vcpkg
 
 on: [push] # Trigger the workflow on every push
 
 jobs:
-  build-and-test:
+  build:
     runs-on: windows-latest
 
     steps:
@@ -13,10 +13,13 @@ jobs:
       - name: Set up MSBuild
         uses: microsoft/setup-msbuild@v1
         with:
-          vs-version: 'latest' # Or specify a specific version of Visual Studio
+          vs-version: 'latest'
+      
+      - name: Install vcpkg dependencies
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          .\vcpkg\bootstrap-vcpkg.bat
+          .\vcpkg\vcpkg.exe install --triplet x64-windows
       
       - name: Build
         run: msbuild /p:Configuration=Debug /m /p:Platform=x86 ShopSmart.sln
-      
-      - name: Run tests
-        run: Debug\YourApp.exe
