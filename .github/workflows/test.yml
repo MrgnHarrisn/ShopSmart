@@ -25,7 +25,7 @@ jobs:
           .\vcpkg\vcpkg.exe install sfml
           .\vcpkg\vcpkg.exe install imgui
           .\vcpkg\vcpkg.exe install imgui-sfml
-          .\vcpkg\vcpkg.exe install nlohmann
+          .\vcpkg\vcpkg.exe install nlohmann-json
       
       - name: Build
         run: msbuild /p:Configuration=Debug /m /p:Platform=x86 ShopSmart.sln
