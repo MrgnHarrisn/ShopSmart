@@ -20,6 +20,12 @@ jobs:
           git clone https://github.com/microsoft/vcpkg.git
           .\vcpkg\bootstrap-vcpkg.bat
           .\vcpkg\vcpkg.exe install --triplet x64-windows
+          .\vcpkg install curl
+          .\vcpkg install cpr
+          .\vcpkg install sfml
+          .\vcpkg install imgui
+          .\vcpkg install imgui-sfml
+          .\vcpkg install nlohmann
       
       - name: Build
         run: msbuild /p:Configuration=Debug /m /p:Platform=x86 ShopSmart.sln
