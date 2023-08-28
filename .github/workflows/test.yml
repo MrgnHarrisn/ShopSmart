@@ -28,4 +28,4 @@ jobs:
           .\vcpkg\vcpkg.exe install nlohmann-json
       
       - name: Build
-        run: msbuild /p:Configuration=Debug /m /p:Platform=x86 ShopSmart.sln
+        run: msbuild /p:Configuration=Debug /m /p:Platform=x86 ./ShopSmart/ShopSmart.sln
