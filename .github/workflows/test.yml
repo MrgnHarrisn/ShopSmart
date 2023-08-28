@@ -16,7 +16,7 @@ jobs:
           vs-version: 'latest' # Or specify a specific version of Visual Studio
       
       - name: Build
-        run: msbuild /p:Configuration=Debug /m /p:Platform=x64 ShopSmart.sln
+        run: msbuild /p:Configuration=Debug /m /p:Platform=x86 ShopSmart.sln
       
       - name: Run tests
         run: Debug\YourApp.exe
