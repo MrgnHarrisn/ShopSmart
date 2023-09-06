@@ -104,7 +104,7 @@ std::vector<std::map<std::string, std::string>> SupermarketAPI::fetchSupermarket
 	
 	for (const auto& store : countdownData["storeAreas"][0]["storeAddresses"])
 	{
-		supermarkets.push_back({ { "name", store["name"] }, { "type", "Countdown" }, { "id", std::to_string(store["id"].get<int>()) } });
+		supermarkets.push_back({ { "name", store["name"] }, { "type", "Countdown" }, { "id", std::to_string(store["id"].get<int>()) }, { "address", store["address"]}});
 	}
 
 	// Fetching for Pak'nSave
