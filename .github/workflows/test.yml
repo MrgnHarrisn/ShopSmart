@@ -22,9 +22,6 @@ jobs:
           .\vcpkg\vcpkg.exe install --triplet x64-windows
           .\vcpkg\vcpkg.exe install curl
           .\vcpkg\vcpkg.exe install cpr
-          .\vcpkg\vcpkg.exe install sfml
-          .\vcpkg\vcpkg.exe install imgui
-          .\vcpkg\vcpkg.exe install imgui-sfml
           .\vcpkg\vcpkg.exe install nlohmann-json
           .\vcpkg\vcpkg.exe integrate install
       
