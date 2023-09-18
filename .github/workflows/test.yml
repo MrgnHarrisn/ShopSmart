@@ -26,4 +26,4 @@ jobs:
           .\vcpkg\vcpkg.exe integrate install
       
       - name: Build
-        run: msbuild /p:Configuration=Debug /m /p:Platform=x86 ./ShopSmart/ShopSmart.sln
+        run: msbuild /p:Configuration=Debug /p:PlatformToolset=v142 /p:Platform=x86 /p:CppStandard=17 ./ShopSmart/ShopSmart.sln
