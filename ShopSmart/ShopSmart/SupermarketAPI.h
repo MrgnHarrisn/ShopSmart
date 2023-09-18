@@ -6,6 +6,8 @@
 #include <map>
 #include <nlohmann/json.hpp>
 
+#define store_t std::map<std::string, std::string>
+
 class SupermarketAPI {
 private:
     const std::string PAKNSAVE_BASE_URL;
@@ -23,9 +25,9 @@ private:
 public:
     SupermarketAPI();
 
-    std::vector<std::map<std::string, std::string>> fetchSupermarkets();
-    void selectSupermarket(const std::map<std::string, std::string>& supermarket);
-    std::vector<std::map<std::string, std::string>> searchProduct(const std::string& term, const std::map<std::string, std::string>& supermarket, int page = 1);
+    std::vector<store_t> fetchSupermarkets();
+    void selectSupermarket(const store_t& supermarket);
+    std::vector<store_t> searchProduct(const std::string& term, const store_t& supermarket, int page = 1);
 };
 
 #endif // SUPERMARKETAPI_H

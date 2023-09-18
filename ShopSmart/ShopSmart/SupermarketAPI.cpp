@@ -7,7 +7,7 @@
 SupermarketAPI::SupermarketAPI() :
 	PAKNSAVE_BASE_URL("https://www.paknsave.co.nz"),
 	COUNTDOWN_BASE_URL("https://www.countdown.co.nz"),
-	NEWWORLD_BASE_URL("https://www.newworld.co.nz/"),
+	NEWWORLD_BASE_URL("https://www.newworld.co.nz"),
 	ITEMS_PER_PAGE(10)
 {
 	// Initializing the clients with the cookies
@@ -39,6 +39,7 @@ cpr::Header SupermarketAPI::commonHeaders()
 	headers["sec-fetch-dest"] = "empty";
 	headers["sec-fetch-mode"] = "cors";
 	headers["sec-fetch-site"] = "same-origin";
+	headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
 	return headers;
 }
 
@@ -55,7 +56,7 @@ cpr::Header SupermarketAPI::countdownHeaders()
 	headers["pragma"] = "no-cache";
 	headers["x-requested-with"] = "OnlineShopping.WebApp";
 	headers["x-ui-ver"] = "7.21.138";
-	headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
+	
 	return headers;
 }
 
@@ -68,7 +69,7 @@ cpr::Header SupermarketAPI::paknsaveHeaders()
 	cpr::Header headers = commonHeaders();
 	headers["referrer"] = PAKNSAVE_BASE_URL;
 	headers["referrerPolicy"] = "no-referrer-when-downgrade";
-	headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
+	// headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
 	return headers;
 }
 
@@ -81,7 +82,7 @@ cpr::Header SupermarketAPI::newWorldHeaders()
 	cpr::Header headers = commonHeaders();
 	headers["referrer"] = NEWWORLD_BASE_URL;
 	headers["referrerPolicy"] = "no-referrer-when-downgrade";
-	headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
+	// headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
 	return headers;
 }
 
@@ -89,9 +90,9 @@ cpr::Header SupermarketAPI::newWorldHeaders()
  * \brief Fetches a list of supermarkets from each platform's API.
  * \return Vector of maps containing supermarket information.
  */
-std::vector<std::map<std::string, std::string>> SupermarketAPI::fetchSupermarkets()
+std::vector<store_t> SupermarketAPI::fetchSupermarkets()
 {
-	std::vector<std::map<std::string, std::string>> supermarkets;
+	std::vector<store_t> supermarkets;
 
 	// Fetching for Countdown
 	countdownClient.SetUrl(COUNTDOWN_BASE_URL + "/api/v1/addresses/pickup-addresses");
@@ -113,7 +114,7 @@ std::vector<std::map<std::string, std::string>> SupermarketAPI::fetchSupermarket
 	auto paknsaveData = nlohmann::json::parse(paknsaveResponse.text);
 	for (const auto& store : paknsaveData["stores"])
 	{
-		supermarkets.push_back({ { "name", store["name"] }, { "type", "Pak'nSave" }, { "id", store["id"] } });
+		supermarkets.push_back({ { "name", store["name"] }, { "type", "Pak'nSave" }, { "id", store["id"] }, {"address", store["address"]}});
 	}
 
 	// Fetching for New World
@@ -122,7 +123,7 @@ std::vector<std::map<std::string, std::string>> SupermarketAPI::fetchSupermarket
 	auto newWorldData = nlohmann::json::parse(newWorldResponse.text);
 	for (const auto& store : newWorldData["stores"])
 	{
-		supermarkets.push_back({ { "name", store["name"] }, { "type", "New World" }, { "id", store["id"] } });
+		supermarkets.push_back({ { "name", store["name"] }, { "type", "New World" }, { "id", store["id"] }, {"address", store["address"]} });
 	}
 
 	return supermarkets;
@@ -136,7 +137,7 @@ std::vector<std::map<std::string, std::string>> SupermarketAPI::fetchSupermarket
  * \param supermarket Map containing supermarket information.
  */
 
-void SupermarketAPI::selectSupermarket(const std::map<std::string, std::string>& supermarket)
+void SupermarketAPI::selectSupermarket(const store_t& supermarket)
 {
 
 	if (supermarket.at("type") == "Countdown")
@@ -165,9 +166,9 @@ void SupermarketAPI::selectSupermarket(const std::map<std::string, std::string>&
  * \param page The page number.
  * \return Vector of maps containing product information.
  */
-std::vector<std::map<std::string, std::string>> SupermarketAPI::searchProduct(const std::string& term, const std::map<std::string, std::string>& supermarket, int page)
+std::vector<store_t> SupermarketAPI::searchProduct(const std::string& term, const store_t& supermarket, int page)
 {
-	std::vector<std::map<std::string, std::string>> products;
+	std::vector<store_t> products;
 	if (supermarket.at("type") == "Countdown")
 	{	
 		countdownClient.SetUrl(COUNTDOWN_BASE_URL + "/api/v1/products?target=search&search=" + term + "&page=" + std::to_string(page) + "&inStockProductsOnly=false&size=" + std::to_string(ITEMS_PER_PAGE));
@@ -205,6 +206,7 @@ std::vector<std::map<std::string, std::string>> SupermarketAPI::searchProduct(co
 	else if (supermarket.at("type") == "Pak'nSave")
 	{
 		paknsaveClient.SetUrl(PAKNSAVE_BASE_URL + "/next/api/products/search?q=" + term + "&s=popularity&pg=" + std::to_string(page) + "&storeId=" + supermarket.at("id") + "&publish=true&ps=" + std::to_string(ITEMS_PER_PAGE));
+		std::cout << paknsaveClient.Get().url << std::endl;
 		auto response = paknsaveClient.Get();
 		auto productData = nlohmann::json::parse(response.text);
 
@@ -213,10 +215,14 @@ std::vector<std::map<std::string, std::string>> SupermarketAPI::searchProduct(co
 				products.push_back({ { "name", product["name"] }, { "price", std::to_string(product["price"] / 100.0) } });
 			}
 		}
+		else {
+			std::cout << paknsaveClient.Get().reason << std::endl;
+		}
 	}
 	else if (supermarket.at("type") == "New World")
 	{	
 		newWorldClient.SetUrl(NEWWORLD_BASE_URL + "/next/api/products/search?q=" + term + "&s=popularity&pg=" + std::to_string(page) + "&storeId=" + supermarket.at("id") + "&publish=true&ps=" + std::to_string(ITEMS_PER_PAGE));
+		std::cout << newWorldClient.Get().url << std::endl;
 		auto response = newWorldClient.Get();
 		auto productData = nlohmann::json::parse(response.text);
 		if (productData["data"].contains("products")) {
@@ -224,7 +230,7 @@ std::vector<std::map<std::string, std::string>> SupermarketAPI::searchProduct(co
 				products.push_back({ { "name", product["name"] }, { "price", std::to_string(product["price"] / 100.0) } });
 		}
 		else {
-			printf("Error\n");
+			std::cout << newWorldClient.Get().reason << std::endl;
 		}
 	}
 

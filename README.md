@@ -19,5 +19,5 @@ If you have these libraries then you can build it with the Visual Studio Solutio
 # How does it work?
 The way this works is:
 You give the program your address.
-It picks the countdown, pak'n save, and countdown in your earea.
+It picks the countdown, pak'n save, and new world in your earea.
 You then give it a grocery list, and it will do a price comparrison between the products in the list.
