@@ -130,7 +130,7 @@ store_t selectMarket(vector<map<string, string>>& stores, SupermarketAPI& sapi)
 
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 	/* Most of this should be in it's own class */
 
@@ -159,6 +159,7 @@ int main()
 		parse(input, sapi, filtered);
 	}
 	
+	/* Return 0 */
 	return 0;
 
 }
