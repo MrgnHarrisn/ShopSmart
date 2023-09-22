@@ -8,55 +8,6 @@
 
 using namespace std;
 
-void parse(string& input, SupermarketAPI& sapi, store_t store)
-{
-	vector<string> split_input;
-	size_t pos = 0;
-
-	while ((pos = input.find(" ")) != string::npos)
-	{
-		split_input.push_back(input.substr(0, pos));
-		input.erase(0, pos + 1);
-	}
-
-	// add the last part if any remains
-	if (!input.empty())
-	{
-		split_input.push_back(input);
-	}
-
-	for (int i = 0; i < split_input.size(); i++) {
-		if (split_input[i] == "query") {
-			sapi.selectSupermarket(store);
-			vector<store_t> products = sapi.searchProduct(split_input[i+1], store);
-			for (store_t prod : products) {
-				cout << prod["name"] << endl;
-				cout << prod["price"] << endl;
-			}
-		}
-		else if (split_input[i] == "query_list") {
-			/* query a lsit of products from a given csv file */
-			sapi.selectSupermarket(store);
-			fstream file;
-			file.open(split_input[i + 1]);
-			string product;
-			while (true) {
-				if (!getline(file, product)) {
-					break;
-				}
-				vector<store_t> products = sapi.searchProduct(product, store, 1);
-				for (store_t prod : products) {
-					cout << prod["name"] << endl;
-					cout << prod["price"] << endl;
-				}
-			}
-			file.close();
-		}
-	}
-
-}
-
-
 string tolower(const string& s)
 {
 	string output = "";
@@ -80,7 +31,7 @@ bool containsWord(const std::string& str, const std::string& word) {
 
 store_t selectMarket(vector<map<string, string>>& stores, SupermarketAPI& sapi)
 {
-	
+
 
 	string city;
 	/* Will then give suggestions for stores */
@@ -105,7 +56,7 @@ store_t selectMarket(vector<map<string, string>>& stores, SupermarketAPI& sapi)
 	} while (new_stores.size() == 0);
 
 	printf("Original Stores: %i\nFiltered: %i\n", stores.size(), new_stores.size());
-	                        
+
 	/* Display found stores */
 	int index = 0;
 	for (auto& store : new_stores) {
@@ -129,6 +80,74 @@ store_t selectMarket(vector<map<string, string>>& stores, SupermarketAPI& sapi)
 	return new_stores[index];
 
 }
+
+void parse(string& input, SupermarketAPI& sapi, store_t& store)
+{
+	vector<string> split_input;
+	size_t pos = 0;
+
+	while ((pos = input.find(" ")) != string::npos)
+	{
+		split_input.push_back(input.substr(0, pos));
+		input.erase(0, pos + 1);
+	}
+
+	// add the last part if any remains
+	if (!input.empty())
+	{
+		split_input.push_back(input);
+	}
+	
+	for (int i = 0; i < split_input.size(); i++) {
+
+
+		/* This needs to be turned into a switch statment */
+
+		if (split_input[i] == "query") {
+			sapi.selectSupermarket(store);
+			vector<store_t> products = sapi.searchProduct(split_input[i+1], store);
+			for (store_t prod : products) {
+				cout << prod["name"] << endl;
+				cout << prod["price"] << endl;
+			}
+			i++;
+		}
+		/* For querying a list of items */
+		else if (split_input[i] == "query_list") {
+			/* query a lsit of products from a given csv file */
+			sapi.selectSupermarket(store);
+
+			/* File for us to search through */
+			fstream file;
+			file.open(split_input[i + 1]);
+			string product;
+			while (true) {
+				if (!getline(file, product)) {
+					break;
+				}
+				/* Storing all the products */
+				vector<store_t> products = sapi.searchProduct(product, store, 1);
+				for (store_t prod : products) {
+					cout << prod["name"] << endl;
+					cout << prod["price"] << endl;
+				}
+			}
+			file.close();
+			i++;
+		}
+		else if (split_input[i] == "clear") {
+			system("CLS");
+		}
+		else if (split_input[i] == "swap_market") {
+			auto stores = sapi.fetchSupermarkets();
+			store = selectMarket(stores, sapi);
+		}
+	}
+
+}
+
+
+
 
 int main(int argc, char* argv[])
 {

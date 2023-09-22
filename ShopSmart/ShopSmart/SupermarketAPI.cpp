@@ -69,7 +69,7 @@ cpr::Header SupermarketAPI::paknsaveHeaders()
 	cpr::Header headers = commonHeaders();
 	headers["referrer"] = PAKNSAVE_BASE_URL;
 	headers["referrerPolicy"] = "no-referrer-when-downgrade";
-	// headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
+	headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
 	return headers;
 }
 
@@ -82,7 +82,7 @@ cpr::Header SupermarketAPI::newWorldHeaders()
 	cpr::Header headers = commonHeaders();
 	headers["referrer"] = NEWWORLD_BASE_URL;
 	headers["referrerPolicy"] = "no-referrer-when-downgrade";
-	// headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
+	headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
 	return headers;
 }
 
