@@ -150,8 +150,10 @@ void parse(string& input, SupermarketAPI& sapi, store_t& store)
 			i++;
 		}
 		else if (split_input[i] == "clear") {
+			/* Only work on windows */
 			system("CLS");
 		}
+		/* Swap supermarket/location */
 		else if (split_input[i] == "swap_market") {
 			auto stores = sapi.fetchSupermarkets();
 			store = selectMarket(stores, sapi);
@@ -159,8 +161,6 @@ void parse(string& input, SupermarketAPI& sapi, store_t& store)
 	}
 
 }
-
-
 
 
 int main(int argc, char* argv[])

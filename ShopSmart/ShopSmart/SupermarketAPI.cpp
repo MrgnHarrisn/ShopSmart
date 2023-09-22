@@ -70,6 +70,7 @@ cpr::Header SupermarketAPI::paknsaveHeaders()
 	headers["referrer"] = PAKNSAVE_BASE_URL;
 	headers["referrerPolicy"] = "no-referrer-when-downgrade";
 	headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
+	headers["Authorization"] = getAuth(PAKNSAVE_BASE_URL);
 	return headers;
 }
 
@@ -83,7 +84,46 @@ cpr::Header SupermarketAPI::newWorldHeaders()
 	headers["referrer"] = NEWWORLD_BASE_URL;
 	headers["referrerPolicy"] = "no-referrer-when-downgrade";
 	headers["user-agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
+	headers["Authorization"] = getAuth(NEWWORLD_BASE_URL);
+	/* Get Authorization code*/
+	
+
+	
 	return headers;
+}
+
+/*!
+* \brief Get's Authorization token for the CommonAPI for PaknSave and NewWorld
+* \return Get's the latest Authorization token
+*/
+std::string SupermarketAPI::getAuth(const std::string& BASE_URL)
+{
+	/* Create a sesson */
+	cpr::Session get_auth;
+	/* Create URL for getting auth code */
+	std::string auth_url = BASE_URL + "/CommonApi/Account/GetCurrentUser";
+	get_auth.SetUrl(auth_url);
+
+	auto auth_response = get_auth.Get();
+
+	/* Check if we got an error */
+	if (!auth_response.error) {
+		auto auth_json = nlohmann::json::parse(auth_response.text);
+		std::string auth = "Bearer " + auth_json["access_token"].get<std::string>();
+
+		/* Return the auth code */
+		return auth;
+
+	}
+	else {
+		/* Something went wrong along the way */
+		std::cout << "Request error" << auth_response.error.message << std::endl;
+
+		return "";
+	}
+
+	
+
 }
 
 /*!
@@ -206,7 +246,6 @@ std::vector<store_t> SupermarketAPI::searchProduct(const std::string& term, cons
 	else if (supermarket.at("type") == "Pak'nSave")
 	{
 		paknsaveClient.SetUrl(PAKNSAVE_BASE_URL + "/next/api/products/search?q=" + term + "&s=popularity&pg=" + std::to_string(page) + "&storeId=" + supermarket.at("id") + "&publish=true&ps=" + std::to_string(ITEMS_PER_PAGE));
-		std::cout << paknsaveClient.Get().url << std::endl;
 		auto response = paknsaveClient.Get();
 		auto productData = nlohmann::json::parse(response.text);
 
@@ -222,7 +261,6 @@ std::vector<store_t> SupermarketAPI::searchProduct(const std::string& term, cons
 	else if (supermarket.at("type") == "New World")
 	{	
 		newWorldClient.SetUrl(NEWWORLD_BASE_URL + "/next/api/products/search?q=" + term + "&s=popularity&pg=" + std::to_string(page) + "&storeId=" + supermarket.at("id") + "&publish=true&ps=" + std::to_string(ITEMS_PER_PAGE));
-		std::cout << newWorldClient.Get().url << std::endl;
 		auto response = newWorldClient.Get();
 		auto productData = nlohmann::json::parse(response.text);
 		if (productData["data"].contains("products")) {

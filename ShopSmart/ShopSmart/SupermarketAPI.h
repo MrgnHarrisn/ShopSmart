@@ -22,6 +22,8 @@ private:
     cpr::Header paknsaveHeaders();
     cpr::Header newWorldHeaders();
 
+    std::string getAuth(const std::string& BASE_URL);
+
 public:
     SupermarketAPI();
 
