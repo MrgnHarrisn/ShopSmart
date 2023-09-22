@@ -8,6 +8,10 @@
 
 using namespace std;
 
+/*!
+ * \brief converts a string to lowercase
+ * \return lowercase version of string
+ */
 string tolower(const string& s)
 {
 	string output = "";
@@ -19,6 +23,10 @@ string tolower(const string& s)
 
 }
 
+/*!
+* \brief checks if a word contains a subtring of another word
+* \return bool
+*/
 bool containsWord(const std::string& str, const std::string& word) {
 
 	if (tolower(str).find(tolower(word)) != -1) {
@@ -28,7 +36,10 @@ bool containsWord(const std::string& str, const std::string& word) {
 	return false;
 
 }
-
+/*!
+* \brief selects a market for the user to search through
+* \return returns a store_t (map<string, string>)
+*/
 store_t selectMarket(vector<map<string, string>>& stores, SupermarketAPI& sapi)
 {
 
@@ -81,6 +92,9 @@ store_t selectMarket(vector<map<string, string>>& stores, SupermarketAPI& sapi)
 
 }
 
+/*!
+* \breif parses the user input through the comandline interface
+*/
 void parse(string& input, SupermarketAPI& sapi, store_t& store)
 {
 	vector<string> split_input;
