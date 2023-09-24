@@ -1,9 +1,7 @@
 #include "SupermarketAPI.h"
 #include <iostream>
 
-/*!
- * \brief The constructor for the SupermarketAPI class.
- */
+
 SupermarketAPI::SupermarketAPI() :
 	PAKNSAVE_BASE_URL("https://www.paknsave.co.nz"),
 	COUNTDOWN_BASE_URL("https://www.countdown.co.nz"),
@@ -24,10 +22,7 @@ SupermarketAPI::SupermarketAPI() :
 	newWorldClient.SetTimeout(cpr::Timeout(3000));
 }
 
-/*!
- * \brief Returns common headers used in all supermarket requests.
- * \return Common headers as a cpr::Header object.
- */
+
 cpr::Header SupermarketAPI::commonHeaders()
 {
 	cpr::Header headers;
@@ -43,10 +38,7 @@ cpr::Header SupermarketAPI::commonHeaders()
 	return headers;
 }
 
-/*!
- * \brief Returns specific headers for the Countdown supermarket.
- * \return Countdown headers as a cpr::Header object.
- */
+
 cpr::Header SupermarketAPI::countdownHeaders()
 {
 	cpr::Header headers = commonHeaders();
@@ -60,10 +52,7 @@ cpr::Header SupermarketAPI::countdownHeaders()
 	return headers;
 }
 
-/*!
- * \brief Returns specific headers for the Pak'nSave supermarket.
- * \return Pak'nSave headers as a cpr::Header object.
- */
+
 cpr::Header SupermarketAPI::paknsaveHeaders()
 {
 	cpr::Header headers = commonHeaders();
@@ -74,10 +63,7 @@ cpr::Header SupermarketAPI::paknsaveHeaders()
 	return headers;
 }
 
-/*!
- * \brief Returns specific headers for the New World supermarket.
- * \return New World headers as a cpr::Header object.
- */
+
 cpr::Header SupermarketAPI::newWorldHeaders()
 {
 	cpr::Header headers = commonHeaders();
@@ -92,10 +78,7 @@ cpr::Header SupermarketAPI::newWorldHeaders()
 	return headers;
 }
 
-/*!
-* \brief Get's Authorization token for the CommonAPI for PaknSave and NewWorld
-* \return Get's the latest Authorization token
-*/
+
 std::string SupermarketAPI::getAuth(const std::string& BASE_URL)
 {
 	/* Create a sesson */
@@ -126,10 +109,7 @@ std::string SupermarketAPI::getAuth(const std::string& BASE_URL)
 
 }
 
-/*!
- * \brief Fetches a list of supermarkets from each platform's API.
- * \return Vector of maps containing supermarket information.
- */
+
 std::vector<store_t> SupermarketAPI::fetchSupermarkets()
 {
 	std::vector<store_t> supermarkets;
@@ -171,11 +151,7 @@ std::vector<store_t> SupermarketAPI::fetchSupermarkets()
 
 // Selects a supermarket to perform subsequent operations. Changes the context in which subsequent API calls are made.
 
-/*!
- * \brief Selects a supermarket to perform subsequent operations.
- * \details Changes the context in which subsequent API calls are made.
- * \param supermarket Map containing supermarket information.
- */
+
 
 void SupermarketAPI::selectSupermarket(const store_t& supermarket)
 {
@@ -198,19 +174,14 @@ void SupermarketAPI::selectSupermarket(const store_t& supermarket)
 	}
 }
 
-/*!
- * \brief Searches for products in the selected supermarket.
- * \details Returns the results from the specified page.
- * \param term The search term.
- * \param supermarket Map containing supermarket information.
- * \param page The page number.
- * \return Vector of maps containing product information.
- */
+
 std::vector<store_t> SupermarketAPI::searchProduct(const std::string& term, const store_t& supermarket, int page)
 {
 	std::vector<store_t> products;
 	if (supermarket.at("type") == "Countdown")
 	{	
+
+
 		countdownClient.SetUrl(COUNTDOWN_BASE_URL + "/api/v1/products?target=search&search=" + term + "&page=" + std::to_string(page) + "&inStockProductsOnly=false&size=" + std::to_string(ITEMS_PER_PAGE));
 		auto response = countdownClient.Get();
 		auto productData = nlohmann::json::parse(response.text);
